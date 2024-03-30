@@ -12,21 +12,30 @@ import lombok.Data;
 @Data
 @TableName("admin")
 public class Admin {
+    /** 主键id 自动递增 **/
     @TableId(type= IdType.AUTO)
-    private Integer id;              //主键
-    private String username;        //用户名
-    private String password;        //密码
-    private String name;            //姓名
-    private String phone;           //电话
-    private String email;           //邮箱
-    private String address;         //地址
-    private String avatar;          //头像
+    private Integer id;
+    /** 管理员用户名 **/
+    private String username;
+    /** 管理员密码 **/
+    private String password;
+    /** 管理员姓名 **/
+    private String name;
+    /** 管理员电话 **/
+    private String phone;
+    /** 管理员邮箱 **/
+    private String email;
+    /** 管理员地址 **/
+    private String address;
+    /** 管理员头像下载地址 **/
+    private String avatar;
 
-    /** 用户头像本地地址 **/
+    /** 管理员头像本地地址 **/
     private String avatarLocal;
-    private String role;            //角色
+    /** 角色身份 **/
+    private String role;
 
+    /** 返回给前端的token信息 **/
     @TableField(exist = false)
-    private String token;           //返回给前端的token信息
-
+    private String token;
 }
