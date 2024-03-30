@@ -1,0 +1,26 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${ip}:3306/music?serverTimezone=Asia/Shanghai
+    username: "root"
+    password: "0000"
+
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+ip: localhost
+
+##mapper的xml文件路径
+mybatis-plus:
+  mapper-locations: classpath:mapper/*Mapper.xml
+
+#mybatis的日志输出
+logging:
+  level:
+    org.xpb: trace
+

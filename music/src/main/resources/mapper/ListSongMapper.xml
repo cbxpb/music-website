@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.xpb.mapper.ListSongMapper">
+    <!--
+         resultMap标签表示将查询结果通过一个中转封装成实体类对象
+         一般用于实体类属性名称与查询结果的列名称不一致的时候，或者需要关联查询的时候。
+         当查询结果有多行数据的时候，它会自动去循环处理。
+      -->
+    <resultMap id="ListSongResultMap" type="org.xpb.domain.ListSong">
+        <id column="id"  property="id"/>
+        <result column="song_list_id" property="songListId"/>
+        <result column="song_id" property="songId"/>
+        <association property="song" javaType="org.xpb.domain.Song">
+            <id column="song_id"  property="id"/>
+            <result column="singer_id" property="singerId"/>
+            <result column="name" property="name"/>
+            <result column="album" property="album"/>
+            <result column="pic" property="pic"/>
+            <result column="lyric_local" property="lyricLocal"/>
+            <result column="url" property="url"/>
+        </association>
+    </resultMap>
+
+    <!-- 分页查询总数量 -->
+    <select id="selectCountByPage" resultType="java.lang.Long">
+        select
+            count(*)
+        from list_song ls
+        left join song s on ls.song_id = s.id
+        <include refid="whereCaluse"/>
+    </select>
+
+    <!-- 分页查询当前页的数据集合 -->
+    <select id="selectByPage" resultMap="ListSongResultMap">
+        select
+            ls.*,
+            s.singer_id,s.name,s.album,s.pic,s.lyric_local,s.url
+        from list_song ls
+        left join song s on ls.song_id = s.id
+        <include refid="whereCaluse"/>
+        order by id desc
+        limit #{startIndex}, #{pageSize}
+    </select>
+
+    <!-- mybatisplus分页测试 -->
+<!--    <select id="selectPageOne" resultMap="ListSongResultMap">-->
+<!--        select-->
+<!--            ls.*,-->
+<!--            s.singer_id,s.name,s.album,s.pic,s.lyric_local,s.url-->
+<!--        from list_song ls-->
+<!--        left join song s on ls.song_id = s.id-->
+<!--    </select>-->
+
+    <!--  条件查询语句,根据歌单id和模糊歌名查询  -->
+    <sql id="whereCaluse">
+        <where>
+            ls.song_list_id = #{songListId}
+            <if test="name != null and name != ''">
+                and s.name like concat('%',#{name},'%')
+            </if>
+        </where>
+    </sql>
+</mapper>
