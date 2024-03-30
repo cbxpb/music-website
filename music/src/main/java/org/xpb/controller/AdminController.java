@@ -2,6 +2,8 @@ package org.xpb.controller;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
@@ -67,12 +69,14 @@ public class AdminController {
      * @param admin
      * @return
      */
-    @PutMapping("/admin/update")
+    @PutMapping("/update")
     public Result update(@RequestBody Admin admin) {
         if (StrUtil.isBlank(admin.getUsername())) {
             throw new ServiceException("500","数据输入不合法");
         }
         try {
+            Admin dbAdmin = adminService.getById(admin.getId());
+            admin.setPassword(dbAdmin.getPassword());
             adminService.updateById(admin);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
@@ -91,18 +95,13 @@ public class AdminController {
      * @param id
      * @return
      */
-    @PutMapping("/admin/updateAvatar")
+    @PutMapping("/updateAvatar")
     public Result updateFile(@RequestParam String downUrl,
                              @RequestParam String uploadUrl,
                              @RequestParam Integer id) {
         try {
-            System.out.println(id);
-            System.out.println(downUrl);
-            System.out.println(uploadUrl);
             /** 根据主键id查询用户数据 **/
             Admin admin = adminService.getById(id);
-            System.out.println(admin);
-
             /** 删除存储的本地头像文件 **/
             DeleteFile file = new DeleteFile();
             file.deleteFile(admin.getAvatarLocal());
@@ -119,6 +118,25 @@ public class AdminController {
         }
         return Result.success();
     }
+
+//    /**
+//     * 根据id查询管理员信息
+//     * @param id
+//     * @return
+//     */
+//    @GetMapping("/selectById/{id}")
+//    public Result selectByPage(@PathVariable Integer id) {
+//        try {
+//            Admin dbAdmin = adminService.getById(id);
+//            return Result.success(dbAdmin);
+//        } catch (Exception e) {
+//            if (e instanceof DuplicateKeyException){
+//                return Result.error("500","获取管理员信息失败");
+//            } else {
+//                return Result.error();
+//            }
+//        }
+//    }
     //查询全部管理员
 //    @GetMapping("/selectAll")
 //    public Result selectAll() {
