@@ -23,40 +23,43 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
-*  功能：管理员所需的功能接口
-*/
-
+ * 管理员Controller层
+ */
 @RestController
+@RequestMapping("/admin")
 public class AdminController {
     @Resource
     AdminService adminService;
 
+
     /**
-     * 管理员登录接口
-     * @param admin
+     * 管理员统一的认证接口，接收post请求，执行登录业务
+     * @param admin 前端传递的登录表单数据（用户名和密码）
      * @return
      */
-    @PostMapping("/admin/login")
+    @PostMapping("/login")
     public Result login(@RequestBody Admin admin) {
+        //1.后端参数校验，如果输入的参数不符合，则返回错误提示
         if (StrUtil.isBlank(admin.getUsername()) || StrUtil.isBlank(admin.getPassword())){
-            return Result.error("数据输入不合法！");
+            return Result.error("500","用户名或密码输入不合法");
         }
+        //2.调用AdminService层的login方法，返回admin信息和token到前端
         admin = adminService.login(admin);
         System.out.println(admin);
         return Result.success(admin);
     }
 
-    @PostMapping("/admin/register")
-    public Result register(@RequestBody Admin admin) {
-        if (StrUtil.isBlank(admin.getUsername()) || StrUtil.isBlank(admin.getPassword())){
-            return Result.error("数据输入不合法！");
-        }
-        if (admin.getUsername().length() > 10 || admin.getPassword().length() > 20){
-            return Result.error("数据输入不合法！");
-        }
-        admin = adminService.register(admin);
-        return Result.success(admin);
-    }
+//    @PostMapping("/admin/register")
+//    public Result register(@RequestBody Admin admin) {
+//        if (StrUtil.isBlank(admin.getUsername()) || StrUtil.isBlank(admin.getPassword())){
+//            return Result.error("数据输入不合法！");
+//        }
+//        if (admin.getUsername().length() > 10 || admin.getPassword().length() > 20){
+//            return Result.error("数据输入不合法！");
+//        }
+//        admin = adminService.register(admin);
+//        return Result.success(admin);
+//    }
 
 
     /**
