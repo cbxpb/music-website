@@ -69,8 +69,14 @@
             <artifactId>java-jwt</artifactId>
             <version>3.4.0</version>
         </dependency>
-    </dependencies>
 
+        <!--   bcrypt加密依赖     -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+
+    </dependencies>
     <properties>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
