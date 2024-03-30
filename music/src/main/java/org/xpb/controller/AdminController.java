@@ -103,6 +103,7 @@ public class AdminController {
             /** 删除存储的本地头像文件 **/
             DeleteFile file = new DeleteFile();
             file.deleteFile(admin.getAvatarLocal());
+            System.out.println("哈哈哈");
             /** 保存路径到consumer表中 **/
             admin.setAvatar(downUrl);
             admin.setAvatarLocal(uploadUrl);
