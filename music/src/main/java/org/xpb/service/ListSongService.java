@@ -1,18 +1,16 @@
 package org.xpb.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.xpb.domain.ListSong;
-import org.xpb.domain.Song;
 import org.xpb.mapper.ListSongMapper;
-import org.xpb.mapper.SongMapper;
 import org.xpb.util.PageList;
 
-import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * 歌单歌曲Service层
+ */
 @Service
 public class ListSongService extends ServiceImpl<ListSongMapper, ListSong> {
 
@@ -25,9 +23,4 @@ public class ListSongService extends ServiceImpl<ListSongMapper, ListSong> {
         List<ListSong> list = baseMapper.selectByPage(startIndex,pageSize,name,songListId);
         return new PageList<ListSong>(total, list);
     }
-
-//mybatisplus分页测试
-//    public Page<ListSong> pageOne(Page<ListSong> objectPage, QueryWrapper<Song> queryWrapper) {
-//        return baseMapper.selectPageOne(objectPage,queryWrapper);
-//    }
 }
