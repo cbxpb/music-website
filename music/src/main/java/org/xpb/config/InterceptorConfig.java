@@ -8,14 +8,12 @@ import org.xpb.common.JwtInterceptor;
 
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
-
-//    "/singer/selectByPage","/singer/**",
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //注册拦截器
         registry.addInterceptor(jwtInterceptor())
                 //要放行的请求
-                .excludePathPatterns("/admin/login","/file/download/**","/singer/**","/song/**","/songList/**","/listSong/**","/countData/**")
+                .excludePathPatterns("/admin/login","/file/download/**")
                 //拦截所有请求
                 .addPathPatterns("/**");
 
