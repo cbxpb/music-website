@@ -12,11 +12,14 @@ import lombok.Data;
 @Data
 @TableName("list_song")
 public class ListSong {
-
+    /** 主键id 自动递增 **/
     @TableId(type = IdType.AUTO)
-    private Integer id;              //主键id
-    private Integer songListId;      //歌单id
-    private Integer songId;          //歌曲id
+    private Integer id;
+    /** 歌单id **/
+    private Integer songListId;
+    /** 歌曲id **/
+    private Integer songId;
+    /** 返回给前端歌曲信息 **/
     @TableField(exist = false)
-    private Song song;           //返回给前端歌曲信息
+    private Song song;
 }
