@@ -42,15 +42,6 @@
         limit #{startIndex}, #{pageSize}
     </select>
 
-    <!-- mybatisplus分页测试 -->
-<!--    <select id="selectPageOne" resultMap="ListSongResultMap">-->
-<!--        select-->
-<!--            ls.*,-->
-<!--            s.singer_id,s.name,s.album,s.pic,s.lyric_local,s.url-->
-<!--        from list_song ls-->
-<!--        left join song s on ls.song_id = s.id-->
-<!--    </select>-->
-
     <!--  条件查询语句,根据歌单id和模糊歌名查询  -->
     <sql id="whereCaluse">
         <where>
