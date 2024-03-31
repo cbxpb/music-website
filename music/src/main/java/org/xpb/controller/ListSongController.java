@@ -28,10 +28,17 @@ import java.util.stream.Collectors;
 public class ListSongController {
     @Resource
     ListSongService listSongService;
-
     @Resource
     SongService songService;
-    //分页+高级查询
+
+    /**
+     * 分页+高级查询
+     * @param pageNum
+     * @param pageSize
+     * @param name
+     * @param songListId
+     * @return
+     */
     @GetMapping("/selectByPage")
     public Result selectByPage(@RequestParam Integer pageNum,
                                @RequestParam Integer pageSize,
@@ -42,7 +49,7 @@ public class ListSongController {
             return Result.success(pageList);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("查询歌单歌曲信息失败");
+                return Result.error("500","查询歌单歌曲信息失败");
             } else {
                 return Result.error();
             }
@@ -66,22 +73,19 @@ public class ListSongController {
             QueryWrapper<ListSong> listSongQueryWrapper = new QueryWrapper<ListSong>();
             listSongQueryWrapper.eq(null != songListId ,"song_list_id",songListId);
             List<ListSong> list = listSongService.list(listSongQueryWrapper);
-//            System.out.println(list);
             //List<Integer> songIds = list.stream().map(ListSong::getSongId).collect(Collectors.toList());
             List<Integer> songIds = list.stream().map(item -> {
                 return item.getSongId();
             }).collect(Collectors.toList());
-            System.out.println(songIds.size());
             QueryWrapper<Song> queryWrapper = new QueryWrapper<Song>().orderByDesc("id");
             queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
             queryWrapper.like(StrUtil.isNotBlank(album),"album",album);
             queryWrapper.notIn(songIds.size()>0,"id",songIds);
-//            System.out.println(songIds.size()>0);
             Page<Song> page = songService.page(new Page<>(pageNum,pageSize),queryWrapper);
             return Result.success(page);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("查询歌曲信息失败");
+                return Result.error("500","查询歌曲信息失败");
             } else {
                 return Result.error();
             }
@@ -97,16 +101,13 @@ public class ListSongController {
     public Result add(@RequestParam Integer songId,
                       @RequestParam Integer songListId) {
         try {
-            //还可以验证数据库中是否已经添加了这条数据  还没做
-            System.out.println(songId);
-            System.out.println(songListId);
             ListSong listSong = new ListSong();
             listSong.setSongId(songId);
             listSong.setSongListId(songListId);
             listSongService.save(listSong);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("添加歌曲失败");
+                return Result.error("500","添加歌单歌曲失败");
             } else {
                 return Result.error();
             }
@@ -122,10 +123,7 @@ public class ListSongController {
     public Result batchDelete(@RequestParam Integer songListId,
                               @RequestParam String songIdsStr) {
         try {
-            System.out.println(songIdsStr);
-            System.out.println(songListId);
             String[] songIds =  songIdsStr.split(",");
-            System.out.println(songIds);
             List<ListSong> list = new ArrayList<>();
             for(String songId : songIds) {
                 ListSong listSong = new ListSong();
@@ -136,7 +134,7 @@ public class ListSongController {
             listSongService.saveBatch(list);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("批量添加数据失败");
+                return Result.error("500","批量添加歌单歌曲失败");
             } else {
                 return Result.error();
             }
@@ -151,11 +149,10 @@ public class ListSongController {
     @DeleteMapping("/delete/{id}")
     public Result delete(@PathVariable Integer id) {
         try {
-            System.out.println(id);
             listSongService.removeById(id);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("删除数据失败");
+                return Result.error("500","删除歌单歌曲失败");
             } else {
                 return Result.error();
             }
@@ -174,31 +171,11 @@ public class ListSongController {
             listSongService.removeBatchByIds(ids);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("批量删除数据失败");
+                return Result.error("500","批量删除歌单歌曲失败");
             } else {
                 return Result.error();
             }
         }
         return Result.success();
     }
-//    mybatisplus分页测试
-//    @GetMapping("/selectByPageOne")
-//    public Result selectByPage(@RequestParam Integer pageNum,
-//                               @RequestParam Integer pageSize,
-//                               @RequestParam String name,
-//                               @RequestParam String songListId) {
-//        try {
-//            QueryWrapper<Song> queryWrapper = new QueryWrapper<Song>();
-//            queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
-//            queryWrapper.eq(null != songListId ,"song_list_id",songListId);
-//            Page<ListSong> page = listSongService.pageOne(new Page<>(pageNum,pageSize),queryWrapper);
-//            return Result.success(page);
-//        } catch (Exception e) {
-//            if (e instanceof DuplicateKeyException){
-//                return Result.error("查询歌手信息失败");
-//            } else {
-//                return Result.error();
-//            }
-//        }
-//    }
 }

@@ -51,11 +51,9 @@ public class CountDataController {
                        .set("singerCount",listSinger.size())
                        .set("songCount",listSong.size())
                        .set("songListCount",listSongList.size());
-
         //用户性别统计
         List<Dict> pieList = new ArrayList<>();
         List<String> Genders = listConsumer.stream().map(Consumer::getGender).distinct().collect(Collectors.toList());
-        System.out.println(Genders);
         for (String gender : Genders) {
             int count = 0;
             for (Consumer consumer : listConsumer) {
@@ -67,7 +65,6 @@ public class CountDataController {
             Dict pie = dict1.set("name", gender).set("value",count);
             pieList.add(pie);
         }
-
         //歌手性别统计
         List<Dict> pieList1 = new ArrayList<>();
         List<String> SingerGenders = listSinger.stream().map(Singer::getGender).distinct().collect(Collectors.toList());
@@ -96,7 +93,6 @@ public class CountDataController {
             Dict bar = dict2.set("category", style).set("value",count);
             barList.add(bar);
         }
-
         //歌手国籍统计
         List<Dict> barList1 = new ArrayList<>();
         List<String> SingAddress = listSinger.stream().map(Singer::getLocation).distinct().collect(Collectors.toList());

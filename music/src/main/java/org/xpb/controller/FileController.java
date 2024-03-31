@@ -33,7 +33,7 @@ public class FileController {
     //图片的根目录
     private static final String IMG_PATH = ROOT_PATH + File.separator + "img";
     private static final String ADMIN_IMG = IMG_PATH + File.separator + "adminAvatar";   // img/adminAvatar      type=1
-    private static final String USER_IMG = IMG_PATH + File.separator + "userAvatar";       // img/userImg      type=2
+    private static final String USER_IMG = IMG_PATH + File.separator + "userAvatar";       // img/userAvatar      type=2
     private static final String SINGER_IMG = IMG_PATH + File.separator + "singerImg"; // img/singerImg  type=3
     private static final String SONG_IMG = IMG_PATH + File.separator + "songImg"; // img/songImg        type=4
     private static final String SONG_LIST_IMG = IMG_PATH + File.separator + "songListImg"; // img/songListImg        type=5

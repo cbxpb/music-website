@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
+import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
+import org.xpb.domain.ListSong;
 import org.xpb.domain.Singer;
 import org.xpb.domain.Song;
+import org.xpb.service.ListSongService;
 import org.xpb.service.SongService;
 
 import javax.annotation.Resource;
@@ -30,34 +33,24 @@ public class SongController {
 
     @Resource
     SongService songService;
+    @Resource
+    ListSongService listSongService;
 
 
     /**
-     * 删除本地文件的操作
-     * @param song
+     * 根据歌曲id删除歌单歌曲表格中的数据及本地文件
+     * @param id
      */
-    public void deletFile(Song song) {
-        //删除歌曲图片
-        if (!StrUtil.isBlank(song.getPicLocal())) {
-            File file = new File(song.getPicLocal());
-            if(file.exists())  {
-                file.delete();
-            }
-        }
-        //删除歌词文件
-        if (!StrUtil.isBlank(song.getLyricLocal())) {
-            File file = new File(song.getLyricLocal());
-            if(file.exists())  {
-                file.delete();
-            }
-        }
-        //删除歌曲文件
-        if (!StrUtil.isBlank(song.getUrlLocal())) {
-            File file = new File(song.getUrlLocal());
-            if(file.exists())  {
-                file.delete();
-            }
-        }
+    public void deleteOther(Integer id) {
+        //根据歌曲id删除歌单歌曲表格中的数据及本地文件
+        DeleteFile file = new DeleteFile();
+        QueryWrapper<ListSong> queryWrapper = new QueryWrapper<ListSong>();
+        queryWrapper.eq("song_id",id);
+        listSongService.remove(queryWrapper);
+        Song song = songService.getById(id);
+        file.deleteFile(song.getPicLocal());
+        file.deleteFile(song.getLyricLocal());
+        file.deleteFile(song.getUrlLocal());
     }
 
 
@@ -68,14 +61,16 @@ public class SongController {
      */
     @PostMapping("/add")
     public Result add(@RequestBody Song song) {
+        if (StrUtil.isBlank(song.getName())){
+            return Result.error("500","请正确输入歌曲信息");
+        }
         try {
             song.setCreateTime(new Date());
             song.setUpdateTime(new Date());
-            System.out.println(song);
             songService.save(song);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("添加歌曲失败");
+                return Result.error("500","添加歌曲失败");
             } else {
                 return Result.error();
             }
@@ -90,15 +85,17 @@ public class SongController {
      */
     @PutMapping("/update")
     public Result update(@RequestBody Song song) {
+        if (StrUtil.isBlank(song.getName())){
+            return Result.error("500","请正确输入歌曲信息");
+        }
         try {
-            System.out.println(song);
             song.setUpdateTime(new Date());
             songService.updateById(song);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("修改歌曲失败");
+                return Result.error("500","修改歌曲失败");
             } else {
-                return Result.error("系统错误");
+                return Result.error();
             }
         }
         return Result.success();
@@ -115,56 +112,77 @@ public class SongController {
                              @RequestParam Integer id,
                              @RequestParam Integer type) {
         try {
-            System.out.println(id);
-            System.out.println(downUrl);
-            System.out.println(uploadUrl);
-            System.out.println(type);
             Song song = songService.getById(id);
-            System.out.println(song);
-            //图片文件
-            if (type == 3) {
-                if (!StrUtil.isBlank(song.getPicLocal())) {
-                    File file = new File(song.getPicLocal());
-                    if(file.exists()) {
-                        file.delete();
-                    }
-                }
+            DeleteFile file = new DeleteFile();
+            //歌曲图片文件
+            if (type == 4) {
+                file.deleteFile(song.getPicLocal());
                 song.setPic(downUrl);
                 song.setPicLocal(uploadUrl);
             }
             //歌曲文件
-            if (type == 5) {
-                if (!StrUtil.isBlank(song.getUrlLocal())) {
-                    File file = new File(song.getUrlLocal());
-                    if(file.exists()) {
-                        file.delete();
-                    }
-                }
+            if (type == 6) {
+                file.deleteFile(song.getUrlLocal());
                 song.setUrl(downUrl);
                 song.setUrlLocal(uploadUrl);
             }
             //歌词文件
-            if (type == 6) {
-                if (!StrUtil.isBlank(song.getLyricLocal())) {
-                    File file = new File(song.getLyricLocal());
-                    if(file.exists()) {
-                        file.delete();
-                    }
-                }
+            if (type == 7) {
+                file.deleteFile(song.getLyricLocal());
                 song.setLyric(downUrl);
                 song.setLyricLocal(uploadUrl);
             }
             songService.updateById(song);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("文件上传失败");
+                return Result.error("500","文件上传失败");
             } else {
-                return Result.error("系统错误");
+                return Result.error();
             }
         }
         return Result.success();
     }
 
+    /**
+     * 删除歌曲信息
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable Integer id) {
+        try {
+            deleteOther(id);
+            songService.removeById(id);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","删除歌曲失败");
+            } else {
+                return Result.error();
+            }
+        }
+        return Result.success();
+    }
+    /**
+     * 批量删除歌曲信息
+     * @param ids
+     * @return
+     */
+    @DeleteMapping("/delete/batch")
+    public Result batchDelete(@RequestBody List<Integer> ids) {
+        try {
+            for(Integer id : ids) {
+                deleteOther(id);
+            }
+            songService.removeBatchByIds(ids);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","批量删除歌曲失败");
+            } else {
+                return Result.error();
+            }
+        }
+        return Result.success();
+    }
 
     /**
      * 模糊查询对应歌手歌曲信息（分页）,如果不传歌手id，则是查询全部歌曲
@@ -188,86 +206,23 @@ public class SongController {
             return Result.success(page);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("查询歌曲信息失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-    }
-
-    /**
-     * 删除歌曲信息
-     * @param id
-     * @return
-     */
-    @DeleteMapping("/delete/{id}")
-    public Result delete(@PathVariable Integer id) {
-        try {
-            Song song = songService.getById(id);
-            System.out.println(song);
-//            //删除歌曲图片
-//            if (!StrUtil.isBlank(song.getPicLocal())) {
-//                File file = new File(song.getPicLocal());
-//                if(file.exists())  {
-//                    file.delete();
-//                }
-//            }
-//            //删除歌词文件
-//            if (!StrUtil.isBlank(song.getLyricLocal())) {
-//                File file = new File(song.getLyricLocal());
-//                if(file.exists())  {
-//                    file.delete();
-//                }
-//            }
-//            //删除歌曲文件
-//            if (!StrUtil.isBlank(song.getUrlLocal())) {
-//                File file = new File(song.getUrlLocal());
-//                if(file.exists())  {
-//                    file.delete();
-//                }
-//            }
-            deletFile(song);
-            songService.removeById(id);
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException){
-                return Result.error("删除数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success();
-    }
-
-    /**
-     * 批量删除歌曲信息
-     * @param ids
-     * @return
-     */
-    @DeleteMapping("/delete/batch")
-    public Result batchDelete(@RequestBody List<Integer> ids) {
-        try {
-            for(Integer id : ids) {
-                Song song = songService.getById(id);
-                System.out.println(song);
-                deletFile(song);
-            }
-            songService.removeBatchByIds(ids);
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException){
-                return Result.error("批量删除数据失败");
+                return Result.error("500","查询歌曲信息失败");
             } else {
                 return Result.error();
             }
         }
-        return Result.success();
     }
 
 
+    /**
+     * 读取歌词文件，返回歌词数组到前端
+     * @param url
+     * @return
+     */
     @GetMapping("/lrc")
     public Result lrc(@RequestParam String url) {
         List<String> word = new ArrayList<>();
         String path = url;
-        System.out.println(path);
         Path filePath = Paths.get(path);
         try (Stream<String> lines = Files.lines( filePath ))
         {
@@ -279,7 +234,7 @@ public class SongController {
         }
         catch (IOException e)
         {
-            return Result.error();//只是测试用例，生产环境下不要这样做异常处理
+            return Result.error();
         }
         return Result.success(word);
     }

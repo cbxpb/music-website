@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
@@ -33,11 +34,13 @@ public class ConsumerController {
      */
     @PostMapping("/add")
     public Result add(@RequestBody Consumer consumer) {
-        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword())) {
+        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword()) || StrUtil.isBlank(consumer.getGender())) {
             throw new ServiceException("500","数据输入不合法");
         }
         consumer.setRole("用户");
+        consumer.setPassword(new BCryptPasswordEncoder().encode(consumer.getPassword()));
         consumer.setCreateTime(new Date());
+        consumer.setUpdateTime(new Date());
         try {
             consumerService.save(consumer);
         } catch (Exception e) {
@@ -57,9 +60,10 @@ public class ConsumerController {
      */
     @PutMapping("/update")
     public Result update(@RequestBody Consumer consumer) {
-        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword())) {
+        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword()) || StrUtil.isBlank(consumer.getGender())) {
             throw new ServiceException("500","数据输入不合法");
         }
+        consumer.setPassword(new BCryptPasswordEncoder().encode(consumer.getPassword()));
         consumer.setUpdateTime(new Date());
         try {
             consumerService.updateById(consumer);
@@ -86,13 +90,8 @@ public class ConsumerController {
                              @RequestParam String uploadUrl,
                              @RequestParam Integer id) {
         try {
-            System.out.println(id);
-            System.out.println(downUrl);
-            System.out.println(uploadUrl);
             /** 根据主键id查询用户数据 **/
             Consumer consumer = consumerService.getById(id);
-            System.out.println(consumer);
-
             /** 删除存储的本地头像文件 **/
             DeleteFile file = new DeleteFile();
             file.deleteFile(consumer.getAvatarLocal());
@@ -102,7 +101,7 @@ public class ConsumerController {
             consumerService.updateById(consumer);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("500","头像更新失败");
+                return Result.error("500","用户头像更新失败");
             } else {
                 return Result.error();
             }
@@ -120,7 +119,6 @@ public class ConsumerController {
         try {
             /** 根据主键id查询用户数据 **/
             Consumer consumer = consumerService.getById(id);
-            System.out.println(consumer);
             /** 删除存储的本地头像文件 **/
             DeleteFile file = new DeleteFile();
             file.deleteFile(consumer.getAvatarLocal());
