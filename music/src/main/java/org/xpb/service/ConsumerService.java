@@ -9,7 +9,6 @@ import org.xpb.exception.ServiceException;
 import org.xpb.mapper.ConsumerMapper;
 import org.xpb.util.JwtUtil;
 
-import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -17,8 +16,6 @@ import java.util.Date;
  */
 @Service
 public class ConsumerService extends ServiceImpl<ConsumerMapper, Consumer> {
-    @Resource
-    ConsumerMapper consumerMapper;
 
     /**
      * 根据用户名查询数据库的用户信息
