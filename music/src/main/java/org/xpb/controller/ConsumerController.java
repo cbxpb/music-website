@@ -8,7 +8,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
-import org.xpb.domain.Admin;
 import org.xpb.domain.Consumer;
 import org.xpb.exception.ServiceException;
 import org.xpb.service.ConsumerService;
@@ -38,9 +37,25 @@ public class ConsumerController {
         if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword())){
             return Result.error("500","用户名或密码输入不合法");
         }
-        //2.调用AdminService层的login方法，返回admin信息和token到前端
+        //2.调用ConsumerService层的login方法，返回consumer信息和token到前端
         consumer = consumerService.login(consumer);
-        System.out.println(consumer);
+        return Result.success(consumer);
+    }
+
+    /**
+     * 用户统一的认证接口，接收post请求，执行注册业务
+     * @param consumer 前端传递的登录表单数据（用户名和密码）
+     * @return
+     */
+    @PostMapping("/register")
+    public Result register(@RequestBody Consumer consumer) {
+        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword())){
+            return Result.error("数据输入不合法！");
+        }
+        if (consumer.getUsername().length() > 10 || consumer.getPassword().length() > 20){
+            return Result.error("数据输入不合法！");
+        }
+        consumer = consumerService.register(consumer);
         return Result.success(consumer);
     }
 
