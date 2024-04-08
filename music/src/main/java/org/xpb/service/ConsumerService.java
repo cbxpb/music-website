@@ -65,6 +65,7 @@ public class ConsumerService extends ServiceImpl<ConsumerMapper, Consumer> {
             throw new ServiceException("用户名已存在");
         }
         consumer.setRole("用户");
+        consumer.setGender("未知");
         consumer.setPassword(new BCryptPasswordEncoder().encode(consumer.getPassword()));
         consumer.setCreateTime(new Date());
         consumer.setUpdateTime(new Date());
