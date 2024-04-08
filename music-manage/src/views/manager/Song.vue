@@ -297,6 +297,7 @@ export default {
         // 解析歌词文件
         parse (text) {
             let lines = text
+            // let pattern = /\[\d{2}:\d{2}(.\d{2,3})*\])/g
             let pattern = /(\[\d{2}:\d{2}.(\d{3}|\d{2})\])|(\[\d{2}:\d{2}])/g
             let result = []
             // 对于歌词格式不对的特殊处理
