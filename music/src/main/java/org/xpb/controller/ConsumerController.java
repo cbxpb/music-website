@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
+import org.xpb.domain.Admin;
 import org.xpb.domain.Consumer;
 import org.xpb.exception.ServiceException;
 import org.xpb.service.ConsumerService;
@@ -25,6 +26,23 @@ public class ConsumerController {
 
     @Resource
     ConsumerService consumerService;
+
+    /**
+     * 用户统一的认证接口，接收post请求，执行登录业务
+     * @param consumer 前端传递的登录表单数据（用户名和密码）
+     * @return
+     */
+    @PostMapping("/login")
+    public Result login(@RequestBody Consumer consumer) {
+        //1.后端参数校验，如果输入的参数不符合，则返回错误提示
+        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword())){
+            return Result.error("500","用户名或密码输入不合法");
+        }
+        //2.调用AdminService层的login方法，返回admin信息和token到前端
+        consumer = consumerService.login(consumer);
+        System.out.println(consumer);
+        return Result.success(consumer);
+    }
 
 
     /**
