@@ -2,7 +2,6 @@ package org.xpb.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.xpb.domain.Admin;
@@ -10,18 +9,12 @@ import org.xpb.exception.ServiceException;
 import org.xpb.mapper.AdminMapper;
 import org.xpb.util.JwtUtil;
 
-import javax.annotation.Resource;
-import java.util.List;
-
 
 /**
  * 管理员Service层
  */
 @Service
 public class AdminService extends ServiceImpl<AdminMapper,Admin> {
-
-    @Resource
-    AdminMapper adminMapper;
 
     /**
      * 根据用户名查询数据库的管理员信息
@@ -59,17 +52,6 @@ public class AdminService extends ServiceImpl<AdminMapper,Admin> {
         return dbAdmin;
     }
 
-//    public Admin register(Admin admin) {
-//        //根据管理员输入的账号查询数据库的管理员信息
-//        Admin dbAdmin = selectByUsername(admin.getUsername());
-//        if (dbAdmin != null) {
-//            //抛出一个自定义的异常
-//            throw new ServiceException("用户名已存在");
-//        }
-//        save(admin);
-//        return admin;
-//    }
-
     /**
      * 管理员实现密码重置业务
      * @param admin
@@ -84,8 +66,7 @@ public class AdminService extends ServiceImpl<AdminMapper,Admin> {
         if (!admin.getPhone().equals(dbAdmin.getPhone())) {
             throw new ServiceException("验证错误");
         }
-        dbAdmin.setPassword("123");     //重置密码
+        dbAdmin.setPassword(new BCryptPasswordEncoder().encode("123"));     //重置密码为123
         updateById(dbAdmin);
     }
-
 }
