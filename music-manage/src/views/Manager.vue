@@ -10,10 +10,12 @@
                </div>
                <!-- 侧边栏菜单 -->
                <el-menu :collapse="isCollapse" :collapse-transition="false" router background-color="#334256" text-color="#ffffff" active-text-color="#20a0ff" style="border: none" :default-active="$route.path">
-                    <el-menu-item v-for="item in items" :key="item.index" :index="item.index" v-if="admin.role === '管理员'">
-                        <i :class="item.icon"></i>
-                        <span slot="title">{{ item.title }}</span>
-                    </el-menu-item>
+                    <template v-if="admin.role === '管理员'">
+                        <el-menu-item v-for="item in items" :key="item.index" :index="item.index">
+                            <i :class="item.icon"></i>
+                            <span slot="title">{{ item.title }}</span>
+                        </el-menu-item>
+                    </template>
                 </el-menu>
             </el-aside>
 
@@ -37,7 +39,7 @@
                                     :headers="{token: admin.token}"
                                     :show-file-list="false"
                                     :data="{type:1}"
-                                    :on-success=" (res,file)=> {handleAvatarSuccess (res,file)}"
+                                    :on-success=" (res,file) => {handleAvatarSuccess (res,file)}"
                                     :before-upload="beforeAvatarUpload"
                                     >
                                     <img class="avatar" src="@/assets/img/logo.png" alt="头像">
