@@ -11,7 +11,6 @@ public class BaceQuery {
 
 
     //set get方法对应的一个属性名称：startIndex
-    //set
     public Integer getStartIndex() {
         return (pageNum-1)*pageSize;
     }
