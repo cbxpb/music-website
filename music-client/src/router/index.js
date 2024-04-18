@@ -3,6 +3,12 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
+// 解决导航栏中的vue-router在3.0版本以上频繁点击菜单报错的问题
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push (location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 const routes = [
   // 用户登录页面
   { path: '/login', name: 'Login', meta:{ name: '登录' }, component: () => import('../views/Login.vue')},

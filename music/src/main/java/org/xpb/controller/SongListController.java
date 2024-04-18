@@ -191,4 +191,25 @@ public class SongListController {
             }
         }
     }
+
+    /**
+     * 模糊查询所有歌单信息（不分页）
+     * @param style
+     * @return
+     */
+    @GetMapping("/selectByStyle")
+    public Result selectByPage(@RequestParam String style) {
+        try {
+            QueryWrapper<SongList> queryWrapper = new QueryWrapper<SongList>().orderByDesc("id");
+            queryWrapper.like(StrUtil.isNotBlank(style),"style",style);
+            List<SongList> list = songListService.list(queryWrapper);
+            return Result.success(list);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","查询歌单信息失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
 }

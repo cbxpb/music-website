@@ -14,7 +14,7 @@
                 <!-- 中间的导航区 -->
                 <div class="header-nav">
                     <ul>
-                        <li v-for="item in navMsg" :key="item.name" @click="toPage(item.path, item.name)">{{ item.name }}</li>
+                        <li :class="{ activeName: item.name === $route.meta.name }" v-for="item in navMsg" :key="item.name" @click="toPage(item.path)">{{ item.name }}</li>
                     </ul>
                 </div>
                 <!-- 中间的搜索区 -->
@@ -40,26 +40,29 @@
         name: "Manager",
         data(){
             return{
+                // 导航栏信息
                 navMsg: [
                     { name: '首页', path: '/'},
                     { name: '歌单', path: '/song-list'},
                     { name: '歌手', path: '/singer'},
                     { name: '我的音乐', path: '/my-music'},
-                ]
+                ],
             }
         },
         methods:{
-            toPage(path,name) {
+            // 点击导航栏跳转到指定页面
+            toPage(path) {
                 this.$router.push({path: path})
             },
         },
     };
 </script>
 
-<style>
+<style scoped>
     /* #region页面头部区域 */
     .header {
-        background-color: skyblue;
+        background-color: #3333;
+        box-shadow: 2px 10px 6px rgba(0, 21, 41, .35);
     }
 
     .header .container {
@@ -86,10 +89,26 @@
 
     .header .header-nav ul {
         display: flex;
+        width: 370px;
+        justify-content: space-between;
+        align-items: center;
     }
+
     .header .header-nav ul li {
-        margin: 0 10px;
         font-size: 25px;
+        cursor: pointer;
     }
+
+    .header .header-nav ul .activeName {
+        font-size: 27px;
+        color: skyblue;
+    }
+
+    .header .header-nav ul li:hover {
+        font-size: 27px;
+        color: skyblue;
+        transition:.1s
+    }
+
     /* #endregion页面头部区域 */
 </style>
