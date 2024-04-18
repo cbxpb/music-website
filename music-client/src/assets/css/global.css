@@ -1,0 +1,24 @@
+/* #region清除某些样式 */
+* {
+    box-sizing: border-box;
+}
+body {
+    color: #333;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+
+ul,ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+/* #endregion清除某些样式 */
+
+/* #region设置版心宽度、居中 */
+.container {
+    width: 1200px;
+    margin: 0 auto;
+}
+/* #endregion设置版心宽度、居中 */
