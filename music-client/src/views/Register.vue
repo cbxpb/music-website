@@ -86,7 +86,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
     .register-container {
         height: 100vh;
         display: flex;

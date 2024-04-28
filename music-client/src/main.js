@@ -6,6 +6,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import '@/assets/css/iconfont/iconfont'
+import '@/assets/css/iconfont/iconfont.css'
 import '@/assets/css/global.css'
 import request from '@/utils/request';
 

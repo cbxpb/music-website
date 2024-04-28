@@ -27,7 +27,7 @@
                     </el-form-item>
                     <div style="display: flex;">
                         <div style="flex: 1;">还没有账号？请 <span style="color: #0f9876;cursor: pointer;" @click="$router.push('/register')">注册</span></div>
-                        <div style="flex: 1;text-align: right;">忘记密码</div>
+                        <!-- <div style="flex: 1;text-align: right;">忘记密码</div> -->
                     </div>
                 </el-form>
             </div>
@@ -109,7 +109,6 @@ export default {
         background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
     }
     .login-wrapper {
-        /* height: 276.5px; */
         display: flex;
         width: 70%;
         border-radius: 15px;
