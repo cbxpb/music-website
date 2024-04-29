@@ -152,7 +152,6 @@ export default {
                 this.$message.success('歌曲已取消收藏')
                 this.$router.go(0)
             }).catch(() => {
-                this.$message.error(res.msg)
             })
         },
     }
