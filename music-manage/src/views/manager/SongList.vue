@@ -20,10 +20,10 @@
             <el-table-column label="歌单图片"  align="center" width="150">
                 <template v-slot="scope">
                     <template v-if="!scope.row.pic">
-                        <img src="@/assets/img/consumer_avatar.jpg" alt="歌单图片" width="100%" height="90px">
+                        <img src="@/assets/img/songList_pic.png" alt="歌单图片" width="90px" height="90px">
                     </template>
                     <template v-else>
-                        <img :src="scope.row.pic" alt="歌单图片" width="100%" height="90px">
+                        <img :src="scope.row.pic" alt="歌单图片" width="90px" height="90px">
                     </template>
                     <el-upload action="http://localhost:9090/file/upload"
                         :headers="{token: admin.token}"
@@ -113,7 +113,6 @@ export default {
         //页面挂载表格数据
         this.load()
     },
-
     methods: {
          //渲染歌曲表格
          load(pageNum) {
@@ -234,7 +233,6 @@ export default {
         },
         // 删除
         del(id) {
-            console.log(id)
             this.$confirm('您确认删除吗?','确认删除',{type:"warning"}).then(response => {
                 this.$request.delete('/songList/delete/' + id).then(res => {
                     if (res.code === '200') {
@@ -254,7 +252,6 @@ export default {
                 this.$message.warning('请选择数据')
                 return
             }
-            console.log(this.ids)
             this.$confirm('您确认批量删除这些数据吗?','确认删除',{type:"warning"}).then(response => {
                 this.$request.delete('/songList/delete/batch', {data:this.ids}).then(res => {
                     if (res.code === '200') {
@@ -279,22 +276,3 @@ export default {
     }
 }
 </script>
-
-
-<style scoped>
-  /* .avatar-uploader-icon {
-    border: 1px solid #333;
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  } */
-
-</style>

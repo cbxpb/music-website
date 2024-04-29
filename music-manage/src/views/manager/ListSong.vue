@@ -19,10 +19,10 @@
             <el-table-column label="图片"  align="center" width="150">
                 <template v-slot="scope">
                     <template v-if="!scope.row.song.pic">
-                        <img src="@/assets/img/consumer_avatar.jpg" alt="歌曲图片" width="100%" height="90px">
+                        <img src="@/assets/img/admin_avatar.png" alt="歌曲图片" width="90px" height="90px">
                     </template>
                     <template v-else>
-                        <img :src="scope.row.song.pic" alt="歌曲图片" width="100%" height="90px">
+                        <img :src="scope.row.song.pic" alt="歌曲图片" width="90px" height="90px">
                     </template>
                 </template>
             </el-table-column>
@@ -140,7 +140,6 @@ export default {
         //页面挂载表格数据
         this.load()
     },
-
     methods: {
          //渲染歌曲表格
         load(pageNum) {
@@ -170,7 +169,6 @@ export default {
                 this.$message.warning('请选择数据')
                 return
             }
-            console.log(this.songIds)
             var songIdsStr = this.songIds.join();
             console.log(songIdsStr)
             this.$confirm('您确认批量添加这些数据吗?','确认添加',{type:"warning"}).then(response => {
@@ -194,7 +192,6 @@ export default {
         },
         //添加单个歌曲
         addOne(songId){
-            console.log(songId)
             this.$confirm('您确认添加吗?','确认添加',{type:"warning"}).then(response => {
                 this.$request.post('/listSong/addOne', null, {
                     params: {
@@ -314,7 +311,6 @@ export default {
                 this.$message.warning('请选择数据')
                 return
             }
-            console.log(this.ids)
             this.$confirm('您确认批量删除这些数据吗?','确认删除',{type:"warning"}).then(response => {
                 this.$request.delete('/listSong/delete/batch', {data:this.ids}).then(res => {
                     if (res.code === '200') {
@@ -338,7 +334,6 @@ export default {
         },
         // 删除
         del(id) {
-            console.log(id)
             this.$confirm('您确认删除吗?','确认删除',{type:"warning"}).then(response => {
                 this.$request.delete('/listSong/delete/' + id).then(res => {
                     if (res.code === '200') {

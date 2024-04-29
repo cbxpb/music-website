@@ -1,3 +1,4 @@
+<!-- 用户管理页面 -->
 <template>
     <div>
         <!-- 搜索模块 -->
@@ -6,6 +7,7 @@
             <el-select v-model="gender" placeholder="请选择性别" clearable style="width: 200px; margin: 0 5px;">
                 <el-option value="男"></el-option>
                 <el-option value="女"></el-option>
+                <el-option value="未知"></el-option>
             </el-select>
             <el-button type="primary" @click="load(1)">查询</el-button>
             <el-button type="info" @click="reset">重置</el-button>
@@ -19,13 +21,13 @@
         <el-table ref="table" :data="tableData" @selection-change="handleSelectionChange" :row-key="getRowKey" border :header-cell-style="{ backgroundColor:'aliceblue', color: '#666'}">
             <el-table-column type="selection" :reserve-selection="true" width="55" align="center"></el-table-column>
             <el-table-column label="序号" type="index" :index="indexMethod" width="55" align="center"></el-table-column>
-            <el-table-column label="图片"  align="center" width="150">
+            <el-table-column label="图片"  align="center" width="120">
                 <template v-slot="scope">
                     <template v-if="!scope.row.avatar">
-                        <img src="@/assets/img/consumer_avatar.jpg" alt="用户头像" width="100%" height="90px">
+                        <img src="@/assets/img/consumer_avatar.png" alt="用户头像" width="90px" height="90px" style="border-radius: 50%;">
                     </template>
                     <template v-else>
-                        <img :src="scope.row.avatar" alt="用户头像" width="100%" height="90px">
+                        <img :src="scope.row.avatar" alt="用户头像" width="90px" height="90px" style="border-radius: 50%;">
                     </template>
                     <el-upload action="http://localhost:9090/file/upload"
                         :headers="{token: admin.token}"
@@ -47,6 +49,11 @@
             <el-table-column label="个性签名" prop="introduction" align="center"></el-table-column>
             <el-table-column label="地址" prop="address" align="center"></el-table-column>
             <el-table-column label="角色" prop="role" align="center"></el-table-column>
+            <el-table-column label="收藏管理" align="center" width="110">
+                <template v-slot="scope">
+                    <el-button size="mini" type="primary" @click="getCollect(scope.row.id)">收藏管理</el-button>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" width="180" align="center">
                 <template v-slot="scope">
                     <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
@@ -80,6 +87,7 @@
                 <el-radio-group v-model="form.gender">
                     <el-radio label="男">男</el-radio>
                     <el-radio label="女">女</el-radio>
+                    <el-radio label="未知">未知</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="电话" prop="phone">
@@ -146,7 +154,6 @@ export default {
         // 页面挂载表格数据
         this.load()
     },
-
     methods: {
          //渲染用户列表
          load(pageNum) {
@@ -241,10 +248,10 @@ export default {
                     }
                 }).then(res => {
                     if (res.code === '200') {                           //表示保存成功
-                        this.$message.success('头像上传成功')
+                        this.$message.success('用户头像上传成功')
                         this.load(this.page)
                     } else {
-                        this.$message.error('头像上传失败' + res.msg)    //弹出错误信息
+                        this.$message.error('用户头像上传失败' + res.msg)    //弹出错误信息
                         this.load(this.page)
                     }
                 })
@@ -262,14 +269,12 @@ export default {
             }
             return isJPG && size;
         },
-    
         // 批量删除
         delBatch() {
             if (!this.ids.length) {
                 this.$message.warning('请选择要删除的用户')
                 return
             }
-            console.log(this.ids)
             this.$confirm('您确认批量删除这些用户吗?','确认删除',{type:"warning"}).then(response => {
                 this.$request.delete('/consumer/delete/batch', {data:this.ids}).then(res => {
                     if (res.code === '200') {
@@ -289,7 +294,6 @@ export default {
         },
         // 删除
         del(id) {
-            console.log(id)
             this.$confirm('您确认删除此用户吗?','确认删除',{type:"warning"}).then(response => {
                 this.$request.delete('/consumer/delete/' + id).then(res => {
                     if (res.code === '200') {
@@ -307,6 +311,11 @@ export default {
         getRowKey(row) {
             return row.id;
         },
+        // 转向收藏列表
+        getCollect(id) {
+            console.log(id)
+            this.$router.push({path:'/collect',query:{id}})
+        }
     }
 }
 </script>

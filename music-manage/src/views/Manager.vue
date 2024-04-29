@@ -18,7 +18,6 @@
                     </template>
                 </el-menu>
             </el-aside>
-
             <el-container>
                 <!-- 头部区域 -->
                 <el-header>
@@ -42,7 +41,7 @@
                                     :on-success=" (res,file) => {handleAvatarSuccess (res,file)}"
                                     :before-upload="beforeAvatarUpload"
                                     >
-                                    <img class="avatar" src="@/assets/img/logo.png" alt="头像">
+                                    <img class="avatar" src="@/assets/img/admin_avatar.png" alt="头像">
                                     </el-upload>
                                 </template>
                                 <template v-else>
@@ -60,7 +59,7 @@
                             </div>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item @click.native="$router.push('/person')">个人信息</el-dropdown-item>
-                                <el-dropdown-item>修改密码</el-dropdown-item>
+                                <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
                                 <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -209,7 +208,6 @@ export default {
         align-items:center;
         justify-content:center
     }
-    /* style="width: 40px;height: 40px; */
     .aside-logo>img {
         width: 40px;
         height: 40px;

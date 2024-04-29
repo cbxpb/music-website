@@ -25,10 +25,10 @@
             <el-table-column label="歌手图片"  align="center" width="150">
                 <template v-slot="scope">
                     <template v-if="!scope.row.pic">
-                        <img src="@/assets/img/consumer_avatar.jpg" alt="歌手图片" width="100%" height="90px">
+                        <img src="@/assets/img/admin_avatar.png" alt="歌手图片" width="90px" height="90px" style="border-radius: 50%;">
                     </template>
                     <template v-else>
-                        <img :src="scope.row.pic" alt="歌手图片" width="100%" height="90px">
+                        <img :src="scope.row.pic" alt="歌手图片" width="90px" height="90px" style="border-radius: 50%;">
                     </template>
                     <el-upload action="http://localhost:9090/file/upload"
                         :headers="{token: admin.token}"
@@ -303,7 +303,3 @@ export default {
     }
 }
 </script>
-
-
-<style scoped>
-</style>
