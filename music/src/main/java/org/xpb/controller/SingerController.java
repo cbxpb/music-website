@@ -1,24 +1,23 @@
 package org.xpb.controller;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
-import org.xpb.domain.*;
+import org.xpb.domain.Collect;
+import org.xpb.domain.ListSong;
+import org.xpb.domain.Singer;
+import org.xpb.domain.Song;
+import org.xpb.service.CollectService;
 import org.xpb.service.ListSongService;
 import org.xpb.service.SingerService;
 import org.xpb.service.SongService;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.List;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 
@@ -35,10 +34,12 @@ public class SingerController {
     SongService songService;
     @Resource
     ListSongService listSongService;
+    @Resource
+    CollectService collectService;
 
 
     /**
-     * 根据歌手id删除对应的歌曲表格中的数据和歌单歌曲表格中的数据
+     * 根据歌手id删除对应的歌曲表格中的数据和歌单歌曲表格中的数据以及收藏数据
      * @param id
      * @return
      */
@@ -57,6 +58,10 @@ public class SingerController {
                 QueryWrapper<ListSong> listSongQueryWrapper = new QueryWrapper<ListSong>();
                 listSongQueryWrapper.eq("song_id",song.getId());
                 listSongService.remove(listSongQueryWrapper);
+                //3.根据歌曲id，查询收藏表中对应的数据，并删除
+                QueryWrapper<Collect> collectQueryWrapper = new QueryWrapper<Collect>();
+                collectQueryWrapper.eq("song_id",song.getId());
+                collectService.remove(collectQueryWrapper);
             }
             songService.remove(songWrapper);
         }
@@ -123,7 +128,7 @@ public class SingerController {
      * @return
      */
     @PutMapping("/updatePic")
-    public Result updateFile(@RequestParam String downUrl,
+    public Result updatePic(@RequestParam String downUrl,
                              @RequestParam String uploadUrl,
                              @RequestParam Integer id) {
         try {
@@ -189,24 +194,6 @@ public class SingerController {
         return Result.success();
     }
 
-//    /**
-//     * 查询全部歌手信息（不分页）
-//     * @return
-//     */
-//    @GetMapping("/selectAll")
-//    public Result selectAll() {
-//        try {
-//            List<Singer> list = singerService.list(new QueryWrapper<Singer>().orderByDesc("id"));
-//            return Result.success(list);
-//        } catch (Exception e) {
-//            if (e instanceof DuplicateKeyException){
-//                return Result.error("查询歌手信息失败");
-//            } else {
-//                return Result.error("系统错误");
-//            }
-//        }
-//    }
-
     /**
      * 模糊查询全部歌手信息（分页）
      * @param pageNum
@@ -235,4 +222,89 @@ public class SingerController {
         }
     }
 
+
+    /** ==================================================客户端接口================================================== */
+
+    /**
+     * 收集所有歌手的地址，返回给前端做导航栏
+     * @return
+     */
+    @GetMapping("/getAllLocation")
+    public Result getAllLocation() {
+        try {
+            List<Singer> listSinger = singerService.list();
+            // 收集所有歌手的地址，返回给前端做导航栏
+            List<String> locations = listSinger.stream().map(Singer::getLocation).distinct().collect(Collectors.toList());
+            return Result.success(locations);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","获取歌手地址失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
+
+    /**
+     * 收集所有歌手的性别，返回给前端做导航栏
+     * @return
+     */
+    @GetMapping("/getAllGender")
+    public Result getAllGender() {
+        try {
+            List<Singer> listSinger = singerService.list();
+            // 收集所有歌手的性别，返回给前端做导航栏
+            List<String> genders = listSinger.stream().map(Singer::getGender).distinct().collect(Collectors.toList());
+            return Result.success(genders);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","获取歌手性别失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
+
+    /**
+     * 查询全部歌手信息（不分页）
+     * @return
+     */
+    @GetMapping("/selectAll")
+    public Result selectAll(@RequestParam String location,
+                            @RequestParam String gender) {
+        try {
+            QueryWrapper<Singer> queryWrapper = new QueryWrapper<Singer>().orderByDesc("id");
+            queryWrapper.eq(StrUtil.isNotBlank(location),"location",location);
+            queryWrapper.eq(StrUtil.isNotBlank(gender),"gender",gender);
+            List<Singer> list = singerService.list(queryWrapper);
+            return Result.success(list);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("查询歌手失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
+
+    /**
+     * 模糊搜索歌手（不分页）,
+     * @param name
+     * @return
+     */
+    @GetMapping("/selectByName")
+    public Result selectByName(@RequestParam String name) {
+        try {
+            QueryWrapper<Singer> queryWrapper = new QueryWrapper<Singer>().orderByDesc("id");
+            queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
+            List<Singer> list = singerService.list(queryWrapper);
+            return Result.success(list);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","搜索歌手失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
 }

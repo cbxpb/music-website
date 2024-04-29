@@ -21,9 +21,6 @@ public class JwtUtil {
 
     private static AdminMapper staticAdminMapper;
 
-//    @Resource
-//    AdminMapper adminMapper;
-
     /**
      * 生成token
      * @param ID

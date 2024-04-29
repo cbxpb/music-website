@@ -2,6 +2,7 @@ package org.xpb.controller;
 
 import cn.hutool.core.util.StrUtil;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
@@ -38,7 +39,7 @@ public class AdminController {
     }
 
     /**
-     * 修改管理员信息
+     * 修改管理员信息(未修改管理员头像)
      * @param admin
      * @return
      */
@@ -62,14 +63,14 @@ public class AdminController {
     }
 
     /**
-     * 前端用户头像更新
+     * 管理员头像更新
      * @param downUrl
      * @param uploadUrl
      * @param id
      * @return
      */
     @PutMapping("/updateAvatar")
-    public Result updateFile(@RequestParam String downUrl,
+    public Result updateAvatar(@RequestParam String downUrl,
                              @RequestParam String uploadUrl,
                              @RequestParam Integer id) {
         try {
@@ -84,7 +85,7 @@ public class AdminController {
             adminService.updateById(admin);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("500","头像更新失败");
+                return Result.error("500","管理员头像更新失败");
             } else {
                 return Result.error();
             }
@@ -92,4 +93,23 @@ public class AdminController {
         return Result.success();
     }
 
+    /**
+     * 修改管理员密码
+     * @param id,password,newPassword
+     * @return
+     */
+    @PutMapping("/updatePassword")
+    public Result updatePassword(@RequestParam Integer id,
+                                 @RequestParam String password,
+                                 @RequestParam String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        Admin dbAdmin = adminService.getById(id);
+        boolean matches = passwordEncoder.matches(password,dbAdmin.getPassword());
+        if (!matches) {
+            throw new ServiceException("原密码输入错误");
+        }
+        dbAdmin.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+        adminService.updateById(dbAdmin);
+        return Result.success();
+    }
 }

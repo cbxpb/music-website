@@ -23,4 +23,10 @@ public class ListSongService extends ServiceImpl<ListSongMapper, ListSong> {
         List<ListSong> list = baseMapper.selectByPage(startIndex,pageSize,name,songListId);
         return new PageList<ListSong>(total, list);
     }
+
+    // 通过歌单id查询对应的歌曲(不分页)
+    public List<ListSong> selectBySongListId(Integer songListId) {
+        List<ListSong> list = baseMapper.selectBySongListId(songListId);
+        return list;
+    }
 }

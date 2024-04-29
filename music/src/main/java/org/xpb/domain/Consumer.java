@@ -55,7 +55,6 @@ public class Consumer {
     @DateTimeFormat(pattern = "YYYY-MM-DD")
     private Date createTime;
 
-
     /** 修改时间 **/
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     @DateTimeFormat(pattern = "YYYY-MM-DD")
@@ -73,5 +72,4 @@ public class Consumer {
     /** 返回给前端的token信息 **/
     @TableField(exist = false)
     private String token;
-
 }

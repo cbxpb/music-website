@@ -7,16 +7,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.Result;
 import org.xpb.domain.ListSong;
-import org.xpb.domain.Singer;
 import org.xpb.domain.Song;
 import org.xpb.service.ListSongService;
 import org.xpb.service.SongService;
 import org.xpb.util.PageList;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,14 +54,14 @@ public class ListSongController {
     }
 
     /**
-     * 模糊查询所有歌曲信息（分页）
+     * 模糊查询所有歌曲信息（分页）用于添加歌曲
      * @param pageNum
      * @param pageSize
      * @param name
      * @return
      */
     @GetMapping("/selectByAllSongsPage")
-    public Result selectByPage(@RequestParam Integer pageNum,
+    public Result selectByAllSongsPage(@RequestParam Integer pageNum,
                                @RequestParam Integer pageSize,
                                @RequestParam String name,
                                @RequestParam String album,
@@ -73,7 +70,6 @@ public class ListSongController {
             QueryWrapper<ListSong> listSongQueryWrapper = new QueryWrapper<ListSong>();
             listSongQueryWrapper.eq(null != songListId ,"song_list_id",songListId);
             List<ListSong> list = listSongService.list(listSongQueryWrapper);
-            //List<Integer> songIds = list.stream().map(ListSong::getSongId).collect(Collectors.toList());
             List<Integer> songIds = list.stream().map(item -> {
                 return item.getSongId();
             }).collect(Collectors.toList());
@@ -115,12 +111,12 @@ public class ListSongController {
         return Result.success();
     }
     /**
-     * 批量删除歌曲信息
+     * 批量添加歌单歌曲
      * @param songListId
      * @return
      */
     @PostMapping("/addAll")
-    public Result batchDelete(@RequestParam Integer songListId,
+    public Result addAll(@RequestParam Integer songListId,
                               @RequestParam String songIdsStr) {
         try {
             String[] songIds =  songIdsStr.split(",");
@@ -177,5 +173,27 @@ public class ListSongController {
             }
         }
         return Result.success();
+    }
+
+
+    /** ==================================================客户端接口================================================== */
+
+    /**
+     * 通过歌单id查询对应的歌曲
+     * @param songListId
+     * @return
+     */
+    @GetMapping("/selectBySongListId")
+    public Result selectBySongListId(@RequestParam Integer songListId) {
+        try {
+            List<ListSong> songs = listSongService.selectBySongListId(songListId);
+            return Result.success(songs);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","查询歌单歌曲信息失败");
+            } else {
+                return Result.error();
+            }
+        }
     }
 }

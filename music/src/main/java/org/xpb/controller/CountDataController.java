@@ -3,7 +3,6 @@ package org.xpb.controller;
 
 import cn.hutool.core.lang.Dict;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.xpb.common.Result;
@@ -18,10 +17,7 @@ import org.xpb.service.SongService;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +89,7 @@ public class CountDataController {
             Dict bar = dict2.set("category", style).set("value",count);
             barList.add(bar);
         }
-        //歌手国籍统计
+        //歌手地区统计
         List<Dict> barList1 = new ArrayList<>();
         List<String> SingAddress = listSinger.stream().map(Singer::getLocation).distinct().collect(Collectors.toList());
         System.out.println(SingAddress);

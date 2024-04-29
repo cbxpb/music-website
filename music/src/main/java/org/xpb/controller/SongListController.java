@@ -8,15 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
 import org.xpb.domain.ListSong;
-import org.xpb.domain.Singer;
-import org.xpb.domain.Song;
 import org.xpb.domain.SongList;
 import org.xpb.service.ListSongService;
 import org.xpb.service.SongListService;
 
 import javax.annotation.Resource;
-import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 歌单管理Controller层,实现歌单相关的接口
@@ -101,13 +99,13 @@ public class SongListController {
      * @return
      */
     @PutMapping("/updatePic")
-    public Result updateFile(@RequestParam String downUrl,
+    public Result updatePic(@RequestParam String downUrl,
                              @RequestParam String uploadUrl,
                              @RequestParam Integer id) {
         try {
             /** 根据主键id查询歌单信息 **/
             SongList songList = songListService.getById(id);
-            /** 删除存储的本地歌手图片 **/
+            /** 删除存储的本地歌单图片 **/
             DeleteFile file = new DeleteFile();
             file.deleteFile(songList.getPicLocal());
             /** 保存路径到songList表中 **/
@@ -192,21 +190,64 @@ public class SongListController {
         }
     }
 
+    /** ==================================================客户端接口================================================== */
+
     /**
-     * 模糊查询所有歌单信息（不分页）
+     * 收集所有歌单的风格，返回给前端做导航栏
+     * @return
+     */
+    @GetMapping("/getAllStyle")
+    public Result getAllStyle() {
+        try {
+            List<SongList> listSongList = songListService.list();
+            // 收集所有歌单的风格，返回给前端做导航栏
+            List<String> styles = listSongList.stream().map(SongList::getStyle).distinct().collect(Collectors.toList());
+            return Result.success(styles);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","获取歌单风格失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
+
+    /**
+     * 根据歌单风格查询歌单信息（不分页）
      * @param style
      * @return
      */
     @GetMapping("/selectByStyle")
-    public Result selectByPage(@RequestParam String style) {
+    public Result selectByStyle(@RequestParam String style) {
         try {
             QueryWrapper<SongList> queryWrapper = new QueryWrapper<SongList>().orderByDesc("id");
-            queryWrapper.like(StrUtil.isNotBlank(style),"style",style);
+            queryWrapper.eq(StrUtil.isNotBlank(style),"style",style);
             List<SongList> list = songListService.list(queryWrapper);
             return Result.success(list);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("500","查询歌单信息失败");
+                return Result.error("500","查询歌单失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
+
+    /**
+     * 模糊搜索歌单（不分页）,
+     * @param name
+     * @return
+     */
+    @GetMapping("/selectByName")
+    public Result selectByName(@RequestParam String name) {
+        try {
+            QueryWrapper<SongList> queryWrapper = new QueryWrapper<SongList>().orderByDesc("id");
+            queryWrapper.like(StrUtil.isNotBlank(name),"title",name);
+            List<SongList> list = songListService.list(queryWrapper);
+            return Result.success(list);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","搜索歌单失败");
             } else {
                 return Result.error();
             }

@@ -72,23 +72,4 @@ public class ConsumerService extends ServiceImpl<ConsumerMapper, Consumer> {
         save(consumer);
         return consumer;
     }
-
-//    /**
-//     * 管理员实现密码重置业务
-//     * @param admin
-//     */
-//    public void resetPassword(Admin admin) {
-//        //1.根据用户名查询数据库的管理员信息，管理员信息为空则抛出一个自定义的异常
-//        Admin dbAdmin = selectByUsername(admin.getUsername());
-//        if (dbAdmin == null) {
-//            //抛出一个自定义的异常
-//            throw new ServiceException("用户不存在");
-//        }
-//        if (!admin.getPhone().equals(dbAdmin.getPhone())) {
-//            throw new ServiceException("验证错误");
-//        }
-//        dbAdmin.setPassword("123");     //重置密码
-//        updateById(dbAdmin);
-//    }
-
 }

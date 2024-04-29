@@ -7,9 +7,10 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
+import org.xpb.domain.Collect;
 import org.xpb.domain.ListSong;
-import org.xpb.domain.Singer;
 import org.xpb.domain.Song;
+import org.xpb.service.CollectService;
 import org.xpb.service.ListSongService;
 import org.xpb.service.SongService;
 
@@ -36,9 +37,12 @@ public class SongController {
     @Resource
     ListSongService listSongService;
 
+    @Resource
+    CollectService collectService;
+
 
     /**
-     * 根据歌曲id删除歌单歌曲表格中的数据及本地文件
+     * 根据歌曲id删除歌单歌曲表格中的数据及本地文件还有收藏数据
      * @param id
      */
     public void deleteOther(Integer id) {
@@ -47,12 +51,16 @@ public class SongController {
         QueryWrapper<ListSong> queryWrapper = new QueryWrapper<ListSong>();
         queryWrapper.eq("song_id",id);
         listSongService.remove(queryWrapper);
+        //根据歌曲id，查询收藏表中对应的数据，并删除
+        QueryWrapper<Collect> collectQueryWrapper = new QueryWrapper<Collect>();
+        collectQueryWrapper.eq("song_id",id);
+        collectService.remove(collectQueryWrapper);
+        //根据歌曲id删除歌曲文件
         Song song = songService.getById(id);
         file.deleteFile(song.getPicLocal());
         file.deleteFile(song.getLyricLocal());
         file.deleteFile(song.getUrlLocal());
     }
-
 
     /**
      * 添加歌曲信息，不涉及文件更新
@@ -213,6 +221,28 @@ public class SongController {
         }
     }
 
+    /** ==================================================客户端接口================================================== */
+
+    /**
+     * 模糊搜索歌曲（不分页）,
+     * @param name
+     * @return
+     */
+    @GetMapping("/selectByName")
+    public Result selectByName(@RequestParam String name) {
+        try {
+            QueryWrapper<Song> queryWrapper = new QueryWrapper<Song>().orderByDesc("id");
+            queryWrapper.like(StrUtil.isNotBlank(name),"name",name);
+            List<Song> list = songService.list(queryWrapper);
+            return Result.success(list);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","搜索歌曲失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
 
     /**
      * 读取歌词文件，返回歌词数组到前端
@@ -222,7 +252,8 @@ public class SongController {
     @GetMapping("/lrc")
     public Result lrc(@RequestParam String url) {
         List<String> word = new ArrayList<>();
-        String path = url;
+        String path =  System.getProperty("user.dir") + File.separator + "files" +
+                File.separator + "music" + File.separator + "lrc" + File.separator + url;
         Path filePath = Paths.get(path);
         try (Stream<String> lines = Files.lines( filePath ))
         {
@@ -237,5 +268,45 @@ public class SongController {
             return Result.error();
         }
         return Result.success(word);
+    }
+
+    /**
+     * 查询对应歌手的歌曲信息（不分页）
+     * @return
+     */
+    @GetMapping("/selectBySingerId")
+    public Result selectBySingerId(@RequestParam Integer singerId) {
+        try {
+            QueryWrapper<Song> queryWrapper = new QueryWrapper<Song>().orderByDesc("id");
+            queryWrapper.eq(null != singerId ,"singer_id",singerId);
+            List<Song> songs = songService.list(queryWrapper);
+            return Result.success(songs);
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","查询歌曲信息失败");
+            } else {
+                return Result.error();
+            }
+        }
+    }
+
+    /**
+     * 根据歌曲id查询某首歌
+     * @param songId
+     * @return
+     */
+    @GetMapping("/selectBySongId")
+    public Result selectBySongId(@RequestParam Integer songId) {
+        try {
+            QueryWrapper<Song> queryWrapper = new QueryWrapper<Song>();
+            queryWrapper.eq(null != songId ,"id",songId);
+            return Result.success(songService.getOne(queryWrapper));
+        } catch (Exception e) {
+            if (e instanceof DuplicateKeyException){
+                return Result.error("500","查询歌曲信息失败");
+            } else {
+                return Result.error();
+            }
+        }
     }
 }

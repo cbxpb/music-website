@@ -8,8 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.xpb.common.DeleteFile;
 import org.xpb.common.Result;
+import org.xpb.domain.Collect;
 import org.xpb.domain.Consumer;
 import org.xpb.exception.ServiceException;
+import org.xpb.service.CollectService;
 import org.xpb.service.ConsumerService;
 
 import javax.annotation.Resource;
@@ -25,6 +27,20 @@ public class ConsumerController {
 
     @Resource
     ConsumerService consumerService;
+
+    @Resource
+    CollectService collectService;
+
+    /**
+     * 根据用户id，查询收藏表中对应的数据，并删除
+     * @param id
+     */
+    public void deleteOther(Integer id) {
+        //根据歌曲id，查询收藏表中对应的数据，并删除
+        QueryWrapper<Collect> collectQueryWrapper = new QueryWrapper<Collect>();
+        collectQueryWrapper.eq("consumer_id",id);
+        collectService.remove(collectQueryWrapper);
+    }
 
     /**
      * 用户统一的认证接口，接收post请求，执行登录业务
@@ -59,7 +75,6 @@ public class ConsumerController {
         return Result.success(consumer);
     }
 
-
     /**
      * 添加前端用户
      * @param consumer
@@ -87,16 +102,21 @@ public class ConsumerController {
     }
 
     /**
-     * 修改前端用户信息
+     * 修改前端用户信息(不修改用户头像)
      * @param consumer
      * @return
      */
     @PutMapping("/update")
     public Result update(@RequestBody Consumer consumer) {
-        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getPassword()) || StrUtil.isBlank(consumer.getGender())) {
+        if (StrUtil.isBlank(consumer.getUsername()) || StrUtil.isBlank(consumer.getGender())) {
             throw new ServiceException("500","数据输入不合法");
         }
-        consumer.setPassword(new BCryptPasswordEncoder().encode(consumer.getPassword()));
+        if (StrUtil.isBlank(consumer.getPassword())) {
+            Consumer dbConsumer = consumerService.getById(consumer.getId());
+            consumer.setPassword(dbConsumer.getPassword());
+        } else {
+            consumer.setPassword(new BCryptPasswordEncoder().encode(consumer.getPassword()));
+        }
         consumer.setUpdateTime(new Date());
         try {
             consumerService.updateById(consumer);
@@ -119,7 +139,7 @@ public class ConsumerController {
      * @return
      */
     @PutMapping("/updateAvatar")
-    public Result updateFile(@RequestParam String downUrl,
+    public Result updateAvatar(@RequestParam String downUrl,
                              @RequestParam String uploadUrl,
                              @RequestParam Integer id) {
         try {
@@ -155,11 +175,13 @@ public class ConsumerController {
             /** 删除存储的本地头像文件 **/
             DeleteFile file = new DeleteFile();
             file.deleteFile(consumer.getAvatarLocal());
+            //根据用户id，查询收藏表中对应的数据，并删除
+            deleteOther(id);
             /** 删除consumer表中的数据 **/
             consumerService.removeById(id);
         } catch (Exception e) {
             if (e instanceof DuplicateKeyException){
-                return Result.error("500","数据删除失败");
+                return Result.error("500","删除用户失败");
             } else {
                 return Result.error();
             }
@@ -179,6 +201,8 @@ public class ConsumerController {
             for(Integer id : ids) {
                 Consumer consumer = consumerService.getById(id);
                 file.deleteFile(consumer.getAvatarLocal());
+                //根据用户id，查询收藏表中对应的数据，并删除
+                deleteOther(id);
             }
             consumerService.removeBatchByIds(ids);
         } catch (Exception e) {
@@ -219,4 +243,25 @@ public class ConsumerController {
         }
     }
 
+    /**=================================客户端接口==========================================**/
+
+    /**
+     * 修改前端用户密码
+     * @param id,password,newPassword
+     * @return
+     */
+    @PutMapping("/updatePassword")
+    public Result updatePassword(@RequestParam Integer id,
+                                 @RequestParam String password,
+                                 @RequestParam String newPassword) {
+        Consumer dbConsumer = consumerService.getById(id);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        boolean matches = passwordEncoder.matches(password,dbConsumer.getPassword());
+        if (!matches) {
+            throw new ServiceException("原密码输入错误");
+        }
+        dbConsumer.setPassword(new BCryptPasswordEncoder().encode(newPassword));
+        consumerService.updateById(dbConsumer);
+        return Result.success();
+    }
 }
