@@ -171,7 +171,7 @@
     };
     const singerAddress = {
         title: {
-            text: '歌手国籍的统计图',
+            text: '歌手地区的统计图',
             left: 'center'
         },
         tooltip: {
@@ -233,7 +233,7 @@ export default {
           songListStyle.xAxis.data = res.data?.Style?.map(v => v.category) || []
           songListStyle.series[0].data = res.data?.Style?.map(v => v.value) || []
           barChart.setOption(songListStyle)
-          //歌手国籍
+          //歌手地区
           singerAddress.xAxis.data = res.data?.Address?.map(v => v.category) || []
           singerAddress.series[0].data = res.data?.Address?.map(v => v.value) || []
           bar1Chart.setOption(singerAddress)
