@@ -38,7 +38,11 @@
             </el-table-column>
             <el-table-column label="歌单名" prop="title" align="center"></el-table-column>
             <el-table-column label="风格" prop="style" align="center"></el-table-column>
-            <el-table-column label="简介" prop="introduction" align="center"></el-table-column>
+            <el-table-column label="简介" align="center" width="300">
+                <template slot-scope="scope">
+                    <p style="height: 100px; overflow: auto">{{ scope.row.introduction }}</p>
+                </template>
+            </el-table-column>
             <el-table-column label="歌曲管理" align="center" width="110">
                 <template v-slot="scope">
                     <el-button size="mini" type="primary" @click="listSongEdit(scope.row.id)">歌曲管理</el-button>
