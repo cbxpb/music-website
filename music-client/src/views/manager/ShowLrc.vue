@@ -60,7 +60,7 @@ export default {
                 if (this.Lyric.length) {
                     if(this.LyricIndex<this.Lyric.length&&this.curTime >= this.Lyric[this.LyricIndex][0]) {
                         this.LyricIndex += 1
-                    } else if(this.curTime < this.Lyric[this.LyricIndex-1][0]){
+                    } else if(this.LyricIndex>0&&this.curTime < this.Lyric[this.LyricIndex-1][0]){
                         this.LyricIndex -= 1
                     }
                 }

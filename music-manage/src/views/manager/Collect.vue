@@ -79,7 +79,7 @@ export default {
             consumerId: '',     //传递的用户id
             keywords: '',       //关键字
             pageNum: 1,         //当前页码
-            pageSize: 2,        //每页显示的条数
+            pageSize: 4,        //每页显示的条数
             tableData: [],      //过滤后的所有的数据
             lrcVisible: false,  //歌词模态框状态
             title:'',           //模态框名字

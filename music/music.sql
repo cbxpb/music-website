@@ -11,7 +11,7 @@
  Target Server Version : 80032
  File Encoding         : 65001
 
- Date: 05/05/2024 21:59:15
+ Date: 02/06/2024 17:19:45
 */
 
 SET NAMES utf8mb4;
@@ -51,14 +51,14 @@ CREATE TABLE `collect`  (
   `song_id` int NULL DEFAULT NULL COMMENT '歌曲id',
   `create_time` datetime NULL DEFAULT NULL COMMENT '收藏时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '收藏表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 48 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '收藏表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of collect
 -- ----------------------------
-INSERT INTO `collect` VALUES (38, 13, 28, '2024-04-29 15:35:48');
-INSERT INTO `collect` VALUES (39, 13, 27, '2024-04-29 15:35:51');
-INSERT INTO `collect` VALUES (40, 13, 29, '2024-04-29 15:35:54');
+INSERT INTO `collect` VALUES (44, 13, 46, '2024-05-26 14:58:37');
+INSERT INTO `collect` VALUES (45, 13, 47, '2024-05-26 14:58:39');
+INSERT INTO `collect` VALUES (46, 13, 50, '2024-05-26 14:58:41');
 
 -- ----------------------------
 -- Table structure for consumer
@@ -82,7 +82,7 @@ CREATE TABLE `consumer`  (
   `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '角色身份（用户）',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username` ASC) USING BTREE COMMENT '用户名唯一'
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of consumer
@@ -98,7 +98,7 @@ CREATE TABLE `list_song`  (
   `song_list_id` int NULL DEFAULT NULL COMMENT '歌单id',
   `song_id` int NULL DEFAULT NULL COMMENT '歌曲id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 93 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌单包含歌曲列表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 129 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌单包含歌曲列表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of list_song
@@ -163,6 +163,41 @@ INSERT INTO `list_song` VALUES (89, 23, 63);
 INSERT INTO `list_song` VALUES (90, 23, 62);
 INSERT INTO `list_song` VALUES (91, 23, 61);
 INSERT INTO `list_song` VALUES (92, 23, 60);
+INSERT INTO `list_song` VALUES (95, 30, 63);
+INSERT INTO `list_song` VALUES (96, 30, 62);
+INSERT INTO `list_song` VALUES (97, 30, 61);
+INSERT INTO `list_song` VALUES (98, 30, 60);
+INSERT INTO `list_song` VALUES (99, 30, 59);
+INSERT INTO `list_song` VALUES (100, 30, 58);
+INSERT INTO `list_song` VALUES (101, 30, 57);
+INSERT INTO `list_song` VALUES (102, 30, 56);
+INSERT INTO `list_song` VALUES (103, 30, 55);
+INSERT INTO `list_song` VALUES (104, 30, 54);
+INSERT INTO `list_song` VALUES (105, 30, 53);
+INSERT INTO `list_song` VALUES (106, 30, 52);
+INSERT INTO `list_song` VALUES (107, 30, 51);
+INSERT INTO `list_song` VALUES (108, 30, 50);
+INSERT INTO `list_song` VALUES (109, 30, 49);
+INSERT INTO `list_song` VALUES (110, 30, 48);
+INSERT INTO `list_song` VALUES (111, 30, 47);
+INSERT INTO `list_song` VALUES (112, 30, 46);
+INSERT INTO `list_song` VALUES (113, 30, 45);
+INSERT INTO `list_song` VALUES (114, 30, 44);
+INSERT INTO `list_song` VALUES (115, 30, 43);
+INSERT INTO `list_song` VALUES (116, 30, 42);
+INSERT INTO `list_song` VALUES (117, 30, 41);
+INSERT INTO `list_song` VALUES (118, 30, 40);
+INSERT INTO `list_song` VALUES (119, 30, 39);
+INSERT INTO `list_song` VALUES (120, 30, 38);
+INSERT INTO `list_song` VALUES (121, 30, 37);
+INSERT INTO `list_song` VALUES (122, 30, 36);
+INSERT INTO `list_song` VALUES (123, 30, 35);
+INSERT INTO `list_song` VALUES (124, 30, 34);
+INSERT INTO `list_song` VALUES (125, 30, 30);
+INSERT INTO `list_song` VALUES (126, 30, 29);
+INSERT INTO `list_song` VALUES (127, 30, 28);
+INSERT INTO `list_song` VALUES (128, 30, 27);
+INSERT INTO `list_song` VALUES (129, 30, 66);
 
 -- ----------------------------
 -- Table structure for singer
@@ -178,7 +213,7 @@ CREATE TABLE `singer`  (
   `pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '歌手图片访问地址',
   `pic_local` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '歌手图片本地地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌手表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌手表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of singer
@@ -192,7 +227,7 @@ INSERT INTO `singer` VALUES (26, 'Justin Bieber', '男', '1994-03-01 00:00:00', 
 INSERT INTO `singer` VALUES (27, 'Maroon 5', '组合', '1994-01-01 00:00:00', '欧美', '中文名：魔力红乐队\n\n国籍：美国\n\n团员组成：Adam Levine、James Burgon Valentine、Jesse Royal Carmichael、Mickey \"Mickey\" Madden 、Matt Flynn、PJ Morton\n\n团员人数：6\n\n职业：摇滚乐队\n\n代表作：《Moves Like Jagger》 《Misery》 《Payphone》\n\n主要成就：格莱美最佳舞台表现奖、格莱美最佳流行乐队/组合奖 、美国人民选择奖最受欢迎摇滚乐队、MTV音乐录影带大奖', 'http://localhost:9090/file/download/1714912130151_Maroon 5.jpg', '1714912130151_Maroon 5.jpg');
 INSERT INTO `singer` VALUES (28, '米津玄師', '男', '1991-03-10 00:00:00', '日本', '外文名：よねづ けんし、Yonezu Kenshi\n\n别名：Hachi、八爷、ハチ\n\n国籍：日本\n\n出生地：日本德岛县德岛市\n\n生日：1991年3月10日\n\n职业：音乐家、创作歌手、插画家、摄影师、舞者\n\n代表作：《Lemon》、《打上花火》、《灰色と青》、《俄罗斯套娃》、《甜甜圈洞》、《砂之惑星》', 'http://localhost:9090/file/download/1714912891820_米津玄師.jpg', '1714912891820_米津玄師.jpg');
 INSERT INTO `singer` VALUES (29, '初音ミク', '女', '2010-04-30 00:00:00', '日本', '外文名：初音ミク\n\n别名：はつねミク，Hatsune Miku\n\n国籍：日本\n\n代表作品：甩葱歌、世界第一的公主殿下\n\n开发商：Crypton Future Media\n\n初始版本：2007年8月31日（发售日）\n\n身 高：158cm\n\n体 重：42kg\n\n主程序：Vocaloid\n\n语 言：日语，英语\n\n擅长节奏：70～150BPM（原设80～150）\n\n擅长音域：A3～E5（原设定为C3～E4）\n\n擅长曲种：流行歌曲', 'http://localhost:9090/file/download/1714913968129_初音ミク.jpg', '1714913968129_初音ミク.jpg');
-INSERT INTO `singer` VALUES (30, 'BLACKPINK (블랙핑크)', '组合', '2016-08-08 00:00:00', '韩国', '中文名：粉墨\n\n外文名：블랙핑크、ブラック・ピンク\n\n国籍：韩国、泰国、新西兰\n\n团员人数：4名\n\n团员组成：JISOO、JENNIE、LISA、ROSÉ\n\n出道日期：2016年8月8日\n\n职业：歌手、演员、主持、舞者\n\n代表作：《WHISTLE》、《PLAYING WITH FIRE》、《BOOMBAYAH》、《As If It\'s Your Last》\n\n主要成就：第26届Melon Music Awards－新人奖，第31届韩国金唱片奖－音源部门新人奖', 'http://localhost:9090/file/download/1714914181852_BLACKPINK (블랙핑크).jpg', '1714914181852_BLACKPINK (블랙핑크).jpg');
+INSERT INTO `singer` VALUES (30, 'BLACKPINK (블랙핑크)', '组合', '2016-08-08 00:00:00', '韩国', '中文名：粉墨\n\n外文名：블랙핑크、ブラック・ピンク\n\n国籍：韩国、泰国、新西兰\n\n团员人数：4名\n\n团员组成：JISOO、JENNIE、LISA、ROSÉ\n\n出道日期：2016年8月8日\n\n职业：歌手、演员、主持、舞者\n\n代表作：《WHISTLE》、《PLAYING WITH FIRE》、《BOOMBAYAH》、《As If It\'s Your Last》\n\n主要成就：第26届Melon Music Awards－新人奖，第31届韩国金唱片奖－音源部门新人奖', 'http://localhost:9090/file/download/1717319490720_BLACKPINK .jpg', '1717319490720_BLACKPINK .jpg');
 INSERT INTO `singer` VALUES (31, '汪苏泷', '男', '1989-09-17 01:00:00', '内地', '外文名：Silence.W\n\n别名：小泷\n\n国籍：中国\n\n出生地：辽宁省沈阳市\n\n生日：1989年9月17日\n\n职业：音乐人、潮牌主理人\n\n代表作：《年轮》、《一笑倾城》、《那个男孩》、《银河》、《小星星》、《有点甜》、《不分手的恋爱》、《风度》、《无名之辈》\n\n主要成就：东方风云榜东方新人、音乐先锋榜创作新人奖、百度沸点年度十大金曲、中国歌曲排行榜年度金曲奖、劲歌王颁奖典礼年度最佳唱作人、爱奇艺尖叫盛典年度影视金曲、移动视频风云盛典年度突破艺人、MusicRadio《银河》获CityFM城市之音点播冠军、至尊音乐盛典“至尊创作歌手', 'http://localhost:9090/file/download/1714914383182_汪苏泷.jpg', '1714914383182_汪苏泷.jpg');
 INSERT INTO `singer` VALUES (32, '林俊杰', '男', '1981-03-27 00:00:00', '新加坡', '外文名：JJ Lin、Wayne Lim\n\n别名：JJ、老林、行走的CD、J神、林三岁\n\n国籍：新加坡\n\n出生地：新加坡\n\n生日：1981年3月27日\n\n职业：歌手、制作人、潮牌主理人\n\n代表作品：《江南》、《曹操》、《发现爱》、《编号89757》等\n\n主要成就：新加坡杰出青年 两届台湾金曲奖最佳国语男歌手 第15届台湾金曲奖最佳新人 30个台湾Hito流行音乐奖项 27个新加坡词曲版权协会奖项 25个中国TOP排行榜奖项 25个中国原创音乐流行榜奖项 24个全球华语歌曲排行榜奖项 第5届通商中国青年奖', 'http://localhost:9090/file/download/1714914516336_林俊杰.jpg', '1714914516336_林俊杰.jpg');
 INSERT INTO `singer` VALUES (33, '薛之谦', '男', '1983-07-17 00:00:00', '内地', '外文名：Joker\n\n别名：谦谦、二谦\n\n国籍：中国\n\n出生地：上海\n\n出生日期：1983年7月17日\n\n职业：歌手、演员、制作人\n\n代表作品：《认真的雪》、《演员》、《丑八怪》、《绅士》\n\n主要成就：2008雪碧中国原创音乐流行榜最具潜质歌手大奖、2009MusicRadio中国TOP排行榜年度最佳舞台演绎奖、第二十届华语榜中榜最受欢迎唱作歌手 、2016Music Radio年度最佳男歌手 、2016酷音乐亚洲盛典年度最受欢迎创作人\n\n粉丝：谦友', 'http://localhost:9090/file/download/1714914655270_薛之谦.jpg', '1714914655270_薛之谦.jpg');
@@ -218,7 +253,7 @@ CREATE TABLE `song`  (
   `lyric_local` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '歌词本地地址',
   `url_local` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '歌曲本地地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 64 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌曲' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 67 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌曲' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of song
@@ -257,6 +292,7 @@ INSERT INTO `song` VALUES (60, 28, 'Lemon-米津玄師', 'レモン', '2024-05-0
 INSERT INTO `song` VALUES (61, 28, '打上花火-米津玄師', 'BOOTLEG', '2024-05-05 00:00:00', '2024-05-05 20:42:03', 'http://localhost:9090/file/download/1714913119951_打上花火-米津玄師.jpg', 'http://localhost:9090/file/download/1714913138171_打上花火-米津玄師.lrc', 'http://localhost:9090/file/download/1714913128525_打上花火-米津玄師.mp3', '1714913119951_打上花火-米津玄師.jpg', '1714913138171_打上花火-米津玄師.lrc', '1714913128525_打上花火-米津玄師.mp3');
 INSERT INTO `song` VALUES (62, 29, '神のまにまに-初音ミク', '聖槍爆裂ボーイ', '2024-05-05 00:00:00', '2024-05-05 20:59:42', 'http://localhost:9090/file/download/1714913975907_神のまにまに-初音ミク.jpg', 'http://localhost:9090/file/download/1714913999890_神のまにまに-初音ミク.lrc', 'http://localhost:9090/file/download/1714913990500_神のまにまに-初音ミク.mp3', '1714913975907_神のまにまに-初音ミク.jpg', '1714913999890_神のまにまに-初音ミク.lrc', '1714913990500_神のまにまに-初音ミク.mp3');
 INSERT INTO `song` VALUES (63, 29, '深海少女-初音ミク', 'EXIT TUNES PRESENTS Vocalodream', '2024-05-05 00:00:00', '2024-05-05 21:00:25', 'http://localhost:9090/file/download/1714913979090_深海少女-初音ミク.jpg', 'http://localhost:9090/file/download/1714914002940_深海少女-初音ミク.lrc', 'http://localhost:9090/file/download/1714913994002_深海少女-初音ミク.mp3', '1714913979090_深海少女-初音ミク.jpg', '1714914002940_深海少女-初音ミク.lrc', '1714913994002_深海少女-初音ミク.mp3');
+INSERT INTO `song` VALUES (66, 36, 'w-王力宏', '1', '2024-05-27 10:59:27', '2024-05-27 10:59:27', NULL, 'http://localhost:9090/file/download/1716778898824_他不懂-张杰.lrc', 'http://localhost:9090/file/download/1716778885456_何必在一起-张杰.mp3', NULL, '1716778898824_他不懂-张杰.lrc', '1716778885456_何必在一起-张杰.mp3');
 
 -- ----------------------------
 -- Table structure for song_list
@@ -270,7 +306,7 @@ CREATE TABLE `song_list`  (
   `pic` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '歌单图片访问地址',
   `pic_local` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '歌单图片本地地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌单\r\n' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '歌单\r\n' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of song_list
